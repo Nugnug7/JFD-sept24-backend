@@ -1,5 +1,10 @@
 //  memanggil modul bawaan dari node.js yaitu http 
-// untuk membuat server http
+//  untuk membuat server http
+
+// Step Step Add folder / modify scripts
+// git add .
+// git commit -m "ketik commit"
+// git push
 
 const http = require('http')
 
@@ -10,4 +15,10 @@ http.createServer(function(request,response) {
 }).listen(3000, function() {
     console.log('Server sudah nyala, http://localhost:3000')
 })
+
+
+
+
+
+
 
