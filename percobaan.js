@@ -11,7 +11,8 @@
 
 
 const http = require('http')
-const { isGeneratorFunction } = require('util/types')
+const fs = require('fs')
+
 
 http.createServer(function(request,response) {
     response.writeHead(200, {'content-type' : 'text/html'})
@@ -19,7 +20,7 @@ http.createServer(function(request,response) {
 
     // Halaman utama
     if (request.url == '/') {
-        response.end(`<h1>Selamat datang di website</h1>`)
+        fs.createReadStream('./view/halaman-utama.html').pipe(response)        
     }
 
     // halaman profil
@@ -27,16 +28,8 @@ http.createServer(function(request,response) {
         let tahun_lahir = 1945
         let tahun_ini = 2024
         let umur  = tahun_ini - tahun_lahir
-        response.end(
-            `<ul>
-                <li>Nama lengkap    : Dwi Nugroho</li>
-                <li> Nama panggilan : Dwi </li>
-                <li> Alamat         : Jakarta</li>
-                <li> Pekerjaan      : Freelance</li>
-                <li> Tanggal lahir  : 17 Agustus ${tahun_lahir} </li>
-                <li> Umur           : ${umur} tahun</li>
-            </ul>`
-        )
+        fs.createReadStream('./view/halaman-profil.html').pipe(response)
+        
     }
 
     // halaman hubungi
