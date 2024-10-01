@@ -1,28 +1,26 @@
-const mysql2 = require('mysql2')
-const { hostname } = require('os')
+const mysql = require('mysql2')
+
 
 // Menyambungkan ke sql 
-mysql2.createConnection ({
-    host : 'localhost',
-    root : 'root',
-    password : ''
-    database : 'db_jdf_sep24'
+const db = mysql.createConnection ({
+    host        : 'localhost',
+    user        : 'root',
+    password    : '',
+    database    : 'db_jdf_sep24'
 })
 
 // Buka koneksi Database
-
-database.connect ( (error) => {
+db.connect ( (error) =>{
     if (error) {
         throw error
     } else {
-        console.log('Berhasil terkoneksi' + database.host)
+        console.log('Berhasil terkoneksi')
     }
-
 })
 
-database.query('', function(errorSql, hasil) {
-    if (errorSQL) {
-        console.log(errorSQL)
+db.query('SELECT * FROM karyawan', function(errorSql, hasil) {
+    if (errorSql) {
+        console.log(errorSql)
     } else {
         console.log(hasil)
     }
