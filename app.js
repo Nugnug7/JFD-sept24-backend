@@ -7,14 +7,15 @@ app.get('/', function(req,res) {
     res.send ('Hellow world')
 })
 
+
 app.get('/pendidikan', function(req,res) {
     res.send ('Riwayat pendidikan')
 })
 
-app.get('/karyawan', function(req,res) {
-    res.send ('List Karyawan')
-})
 
+app.get('/karyawan', function(req,res) {
+    res.send ('<h1>List Karyawan</h1>')
+})
 
 
 app.listen(3000, function() {
