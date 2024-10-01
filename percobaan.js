@@ -29,7 +29,6 @@ http.createServer(function(request,response) {
         let tahun_ini = 2024
         let umur  = tahun_ini - tahun_lahir
         fs.createReadStream('./view/halaman-profil.html').pipe(response)
-        
     }
 
     // halaman hubungi
