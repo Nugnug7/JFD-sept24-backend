@@ -1,7 +1,11 @@
+// Requirement aplikasi pendukung node JS untuk backend (express js, node module, express-validator)
+
 const express = require('express')
 const app = express()
 const mysql = require('mysql2')
 const {body, query, validationResult} = require('express-validator')
+
+
 
 // Menyambungkan ke sql 
 const db = mysql.createConnection ({
@@ -19,6 +23,7 @@ db.connect ( (error) =>{
         console.log('Berhasil terkoneksi')
     }
 })
+
 
 function getAll_karyawan () {
     return new Promise ( (resolve, rejects) => {
@@ -110,21 +115,59 @@ app.get('/karyawan/detail/:id_karyawan', async function(req,res) {
     res.render ('page-karyawan-detail', data)
 })
 
+
+// Menampilkan Jabatan dan Agama menjadi pilihan
+function getAll_jabatan() {
+    return new Promise( (resolve, reject) => {
+        let sqlSyntax =
+        `SELECT * FROM jabatan`
+        db.query(sqlSyntax, function(errorSql, hasil) {
+            if (errorSql) {
+                reject(errorSql)
+            } else {
+                resolve(hasil)
+            }
+        })
+    })
+}
+
+function getAll_agama() {
+    return new Promise( (resolve, reject) => {
+        let sqlSyntax =
+        `SELECT * FROM agama`
+        db.query(sqlSyntax, function(errorSql, hasil) {
+            if (errorSql) {
+                reject(errorSql)
+            } else {
+                resolve(hasil)
+            }
+        })
+    })
+}
+
 app.get('/karyawan/tambah', async function(req,res) {
     // form tambah karyawan
-    res.render ('page-karyawan-form-tambah')
+    // tambah data variable jabatan dan agama untuk di tampilkan menjadi pilihan
+    let data = {
+        jabatan: await getAll_jabatan(),
+        agama: await getAll_agama(),
+    }
+    res.render ('page-karyawan-form-tambah', data)
 })
+
 
 let formValidasiInsert = [
     body('form_nik').notEmpty().isNumeric(),
     body('form_nama').notEmpty().isString(),
+    body('form_tanggal_lahir').notEmpty().isDate(),
+    body('form_alamat').notEmpty().isString(),
 ]
 
 app.post('/karyawan/proses-insert-data', formValidasiInsert,async function(req,res) {
     const errors = validationResult(req)
     // jika lolos validasi
     if (errors.isEmpty()) {
-     // in case request params meet the validation criteria
+    // in case request params meet the validation criteria
 
     // form tambah karyawan
     // req.body             => ambil semua inputan dari form body
@@ -142,13 +185,14 @@ app.post('/karyawan/proses-insert-data', formValidasiInsert,async function(req,r
         // 3b. Jika berhasil, tampilan pesan sukses
         throw error
         }
+
     //insert_karywan (req)
     //res.end('kiriman data')
     // 1. Tangkap isi data dari masing-masing
     
     
     // jika tidak lolos
-    }else {
+    } else {
     // res.status(422).json({errors: errors.array()})
     let errorData = {
         pesanError: errors.array()
@@ -166,13 +210,15 @@ function insert_karyawan (req) {
         `insert INTO karyawan
         (nama,nik,tanggal_lahir,alamat,jabatan,agama)
         Values
-        (?,?,?,?,null,null)
+        (?,?,?,?,?,?)
         `
         let sqlData = [
             req.body.form_nama,
             req.body.form_nik,
             req.body.form_tanggal_lahir,
             req.body.form_alamat,
+            req.body.form_jabatan,
+            req.body.form_agama,
         ]
         
         db.query(sqlSyntax, sqlData, function(errorSql, hasil) {
@@ -188,7 +234,42 @@ function insert_karyawan (req) {
 }
 
 
+// Membuat tombol hapus pada page karyawan
 
+function hapuskaryawan(idkry){
+    return new Promise ( (resolve, rejects) => {
+        let sqlSyntax =
+        `DELETE From karyawan where id =?`
+        
+        db.query(sqlSyntax, [idkry], function(errorSql, hasil) {
+            if (errorSql) {
+                rejects(errorSql)
+            } else {
+                resolve(hasil)
+            }
+    })
+
+    })
+}
+
+app.get('/karyawan/hapus/:id_karyawan', async function(req,res) {
+    try {
+        let hapus = await hapuskaryawan(req.params.id_karyawan)
+        if (hapus.affectedRows > 0) {
+        
+        res.redirect('/karyawan')
+    }
+    }    catch (error) {
+    throw error
+    }
+
+})
+
+
+
+
+
+// Port untuk ke halaman HTML 
 app.listen(3000, function() {
     console.log('Server sudah nyala, http://localhost:3000')
 })

@@ -23,7 +23,7 @@
             <th>NIK</th>
             <th>Nama</th>
             <th>Jabatan</th>
-            <th>Aksi</th>
+            <th colspan="2">Aksi</th>
         </tr>
     </thead>
     <tbody>
@@ -43,12 +43,18 @@
                         <button>Rincian</button>
                     </a>
                 </td>
+                <td class="p5">
+                    <a href="/karyawan/hapus/<%= karyawan[i].id %>">
+                        <button onclick="return confirm ('Yakin ingin menghapus (<%=karyawan[i].id %> ?')">Hapus
+                        </button>
+                    </a>
+                </td>
             </tr>
             <% } %>
     </tbody>
 </table>
 
-<a href="/">
+<a href=" /">
     <button class="button">beranda</button>
 </a>
 
