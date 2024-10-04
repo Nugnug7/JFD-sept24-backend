@@ -1,32 +1,58 @@
 <h1>List Karyawan</h1>
 
-<table border="1">
+<style>
+    .button {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .p5 {
+        padding: 5px;
+    }
+</style>
+
+
+<a href="/karyawan/tambah">
+    <button class="button"> + Karyawan Baru </button>
+</a>
+<br>
+
+<table border=" 1">
     <thead>
         <tr>
             <th>NIK</th>
-            <th>nama</th>
-            <th>jabatan</th>
+            <th>Nama</th>
+            <th>Jabatan</th>
+            <th>Aksi</th>
         </tr>
     </thead>
     <tbody>
         <% for (const i in karyawan) { %>
             <tr>
-                <td>
+                <td class="p5">
                     <%= karyawan[i].nik %>
                 </td>
-                <td>
+                <td class="p5">
                     <%= karyawan[i].nama %>
                 </td>
-                <td>
+                <td class="p5">
                     <%= karyawan[i].jabatan_nama %>
+                </td>
+                <td class="p5">
+                    <a href="/karyawan/detail/<%= karyawan[i].id %>">
+                        <button>Rincian</button>
+                    </a>
                 </td>
             </tr>
             <% } %>
     </tbody>
 </table>
 
+<a href="/">
+    <button class="button">beranda</button>
+</a>
 
 
-<pre>
-<%= JSON.stringify(karyawan, null, 4 ) %>
-</pre>
+<!-- <pre> -->
+<!-- <%= JSON.stringify(karyawan, null, 4 ) %> -->
+<!-- </pre> -->
