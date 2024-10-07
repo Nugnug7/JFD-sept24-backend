@@ -3,6 +3,7 @@
 const express = require('express')
 const app = express()
 const mysql = require('mysql2')
+const moment = require('moment')
 const {body, query, validationResult} = require('express-validator')
 
 
@@ -118,40 +119,16 @@ app.get('/karyawan/detail/:id_karyawan', async function(req,res) {
 
 
 // Menampilkan Jabatan dan Agama menjadi pilihan
-function getAll_jabatan() {
-    return new Promise( (resolve, reject) => {
-        let sqlSyntax =
-        `SELECT * FROM jabatan`
-        db.query(sqlSyntax, function(errorSql, hasil) {
-            if (errorSql) {
-                reject(errorSql)
-            } else {
-                resolve(hasil)
-            }
-        })
-    })
-}
+const model_agama = require('./model/model_agama')
+const model_jabatan = require('./model/model_jabatan')
 
-function getAll_agama() {
-    return new Promise( (resolve, reject) => {
-        let sqlSyntax =
-        `SELECT * FROM agama`
-        db.query(sqlSyntax, function(errorSql, hasil) {
-            if (errorSql) {
-                reject(errorSql)
-            } else {
-                resolve(hasil)
-            }
-        })
-    })
-}
 
 app.get('/karyawan/tambah', async function(req,res) {
     // form tambah karyawan
     // tambah data variable jabatan dan agama untuk di tampilkan menjadi pilihan
     let data = {
-        jabatan: await getAll_jabatan(),
-        agama: await getAll_agama(),
+        jabatan: await model_jabatan.getAll_jabatan(),
+        agama: await model_agama.getAll_agama(),
     }
     res.render ('page-karyawan-form-tambah', data)
 })
@@ -246,7 +223,6 @@ function insert_karyawan (req) {
                 resolve(hasil)
             }
     })
-
     })
 
 }
@@ -256,7 +232,7 @@ function insert_karyawan (req) {
 function hapuskaryawan(idkry){
     return new Promise ( (resolve, rejects) => {
         let sqlSyntax =
-        `DELETE From karyawan where id =?`
+        `DELETE From karyawan where id = ?`
         
         db.query(sqlSyntax, [idkry], function(errorSql, hasil) {
             if (errorSql) {
@@ -275,7 +251,7 @@ app.get('/karyawan/hapus/:id_karyawan', async function(req,res) {
         if (hapus.affectedRows > 0) {    
         res.redirect('/karyawan')
     }
-    }    catch (error) {
+    } catch (error) {
     throw error
     }
 
@@ -283,14 +259,46 @@ app.get('/karyawan/hapus/:id_karyawan', async function(req,res) {
 
 app.get('/karyawan/edit/:id_karyawan', async function(req,res) {
     let data = {
-        satukaryawan : await getOne_karyawan(),
-        jabatan: await getAll_jabatan(),
-        agama: await getAll_agama(),
+        satukaryawan: await getOne_karyawan( req.params.id_karyawan ),
+        jabatan: await model_jabatan.getAll_jabatan(),
+        agama: await model_agama.getAll_agama(),
+        moment:moment,
     }
-        res.redirect('page-karyawan-form-edit')
-    })
+        res.render('page-karyawan-form-edit', data)
+})
     
+app.post('/karyawan/proses-update-data/:id_karyawan', async function(req,res) {
+    try {
+        let update = await update_karyawan( req, req.params.id_karyawan )
+        if (update.affectedRows > 0) {
+            res.redirect('/karyawan?notif=Berhasil perbarui data karyawan')
+        }
+    } catch (error) {
+        
+    }
+})
 
+function update_karyawan(req) {
+    return new Promise( (resolve, reject) => {
+        let sqlSyntax =
+        `UPDATE karyawan SET ? WHERE id = ?`
+        let sqlData = {
+            nama            : req.body.form_nama,
+            nik             : req.body.form_nik,
+            tanggal_lahir   : req.body.form_tanggal_lahir,
+            alamat          : req.body.form_alamat,
+            jabatan         : req.body.form_jabatan,
+            agama           : req.body.form_agama,
+        }
+        db.query(sqlSyntax, [sqlData, req.params.id_karyawan], function(errorSql, hasil) {
+            if (errorSql) {
+                reject(errorSql)
+            } else {
+                resolve(hasil)
+            }
+        })
+    })
+}
 
 
 

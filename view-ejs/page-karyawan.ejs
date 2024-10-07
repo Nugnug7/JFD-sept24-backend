@@ -14,73 +14,62 @@
 
 
 
-<% if (typeof notifikasi !=='undefined' ) { %>
-    <span style="color: green;"><b>
-            <%= notifikasi %>
-        </b></span>
-    <br><br>
-    <% } %>
+
+<a href="/karyawan/tambah">
+    <button class="button"> + Karyawan Baru </button>
+</a>
+<br>
+
+<table border=" 1">
+    <thead>
+        <tr>
+            <th>NIK</th>
+            <th>Nama</th>
+            <th>Jabatan</th>
+            <th colspan="4">Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (const i in karyawan) { %>
+            <tr>
+                <td class="p5">
+                    <%= karyawan[i].nik %>
+                </td>
+                <td class="p5">
+                    <%= karyawan[i].nama %>
+                </td>
+                <td class="p5">
+                    <%= karyawan[i].jabatan_nama %>
+                </td>
+
+                <td class="p5">
+                    <a href="/karyawan/detail/<%= karyawan[i].id %>">
+                        <button>Rincian</button>
+                    </a>
+                </td>
+
+                <td class="p5">
+                    <a href="/karyawan/hapus/<%= karyawan[i].id %>">
+                        <button
+                            onclick="return confirm('Yakin ingin menghapus (<%=karyawan[i].id %> ?)')">Hapus</button>
+                    </a>
+                </td>
+
+                <td class="p5">
+                    <a href="/karyawan/edit/<%= karyawan[i].id %>">
+                        <button>Edit</button>
+                    </a>
+                </td>
+            </tr>
+            <% } %>
+    </tbody>
+</table>
+
+<a href="/">
+    <button class="button">beranda</button>
+</a>
 
 
-
-
-        <a href="/karyawan/tambah">
-            <button class="button"> + Karyawan Baru </button>
-        </a>
-        <br>
-
-        <table border=" 1">
-            <thead>
-                <tr>
-                    <th>NIK</th>
-                    <th>Nama</th>
-                    <th>Jabatan</th>
-                    <th colspan="4">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for (const i in karyawan) { %>
-                    <tr>
-                        <td class="p5">
-                            <%= karyawan[i].nik %>
-                        </td>
-                        <td class="p5">
-                            <%= karyawan[i].nama %>
-                        </td>
-                        <td class="p5">
-                            <%= karyawan[i].jabatan_nama %>
-                        </td>
-                        <td class="p5">
-                            <a href="/karyawan/detail/<%= karyawan[i].id %>">
-                                <button>Rincian</button>
-                            </a>
-                        </td>
-
-                        <td class="p5">
-                            <a href="/karyawan/hapus/<%= karyawan[i].id %>">
-                                <button onclick="return confirm ('Yakin ingin menghapus (<%=karyawan[i].id %> ?')">Hapus
-                                </button>
-                            </a>
-                        </td>
-
-                        <td class="p5">
-                            <a href="/karyawan/edit/<%= karyawan[i].id %>">
-                                <button>Edit
-                                </button>
-                            </a>
-                        </td>
-
-
-                    </tr>
-                    <% } %>
-            </tbody>
-        </table>
-
-        <a href=" /">
-            <button class="button">beranda</button>
-        </a>
-
-
-        <!-- <pre> -->
-        <!-- <%= JSON.stringify(karyawan, null, 4 ) %> -->
-        <!-- </pre> -->
+<!-- <pre> -->
+<!-- <%= JSON.stringify(karyawan, null, 4 ) %> -->
+<!-- </pre> -->

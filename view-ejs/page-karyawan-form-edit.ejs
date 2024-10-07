@@ -1,0 +1,62 @@
+<h1>Edit Data Karyawan</h1>
+
+
+<% if (typeof pesanError !=='undefined' ) { %>
+    <span style="color: rgb(81, 255, 0);">
+        <%= pesanError[0].path +': '+ pesanError[0].msg +' '+ pesanError[0].value %>
+    </span>
+    <br><br>
+<% } %>
+
+
+
+<form action="/karyawan/proses-update-data/<%= satukaryawan[0].id %>" method="post">
+    <label for="">Nomor Induk Karyawan</label>
+    <input type="text" name="form_nik" value="<%= satukaryawan[0].nik %>">
+    <br>
+    <br>
+    <label for="">Nama lengkap</label>
+    <input type="text" name="form_nama" value="<%= satukaryawan[0].nama %>">
+    <br>
+    <br>
+    <label for="">Tanggal Lahir</label>
+    <input type="date" name="form_tanggal_lahir" value="<%= moment(satukaryawan[0].tanggal_lahir).format('yyyy-mm-dd')%>">
+            <br>
+            <br>
+            <label for="">Alamat</label><br>
+            <textarea name="form_alamat" id="" rows="5" cols="50"><%= satukaryawan[0].alamat %></textarea>
+            <br>
+            <br>
+
+            <label for="">Jabatan</label><br>
+            <select name="form_jabatan">
+                <option value="">-- pilih --</option>
+                <% for (const i in jabatan) { %>
+                    <% let dipilih=(satukaryawan[0].Jabatan==jabatan[i].id) ? 'selected' : '' %>
+                        <option value="<%= jabatan[i].id %>" <%=dipilih %>>
+                            <%= jabatan[i].nama %>
+                        </option>
+                        <% } %>
+            </select>
+            <br>
+            <br>
+
+            <label for="">Agama</label><br>
+            <select name="form_agama">
+                <option value="">-- pilih --</option>
+                <% for (const i in agama) { %>
+                    <% let dipilih=(satukaryawan[0].agama==agama[i].id) ? 'selected' : '' %>
+                        <option value="<%= agama[i].id %>" <%=dipilih %>>
+                            <%= agama[i].nama %>
+                        </option>
+                        <% } %>
+            </select>
+            <br>
+            <br>
+            
+
+
+
+            <button type="submit">simpan</button>
+
+            </form>
