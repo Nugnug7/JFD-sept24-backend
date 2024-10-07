@@ -102,7 +102,8 @@ app.get('/pendidikan', function(req,res) {
 app.get('/karyawan', async function(req,res) {
     // Prose Penarikan Data
     let data = {
-        karyawan : await getAll_karyawan()
+        karyawan: await getAll_karyawan(),
+        notifikasi: req.query.notif,
     }
     res.render ('page-karyawan', data)
 })
@@ -165,6 +166,8 @@ let formValidasiInsert = [
 
 app.post('/karyawan/proses-insert-data', formValidasiInsert,async function(req,res) {
     const errors = validationResult(req)
+
+
     // jika lolos validasi
     if (errors.isEmpty()) {
     // in case request params meet the validation criteria
@@ -177,11 +180,14 @@ app.post('/karyawan/proses-insert-data', formValidasiInsert,async function(req,r
          // 2. Kirim sebagai script SQL
         let insert = await insert_karyawan(req)
           // 3. Proses pengecekan ter input ke DB 
-        if (insert.affectedRows > 0)
+        if (insert.affectedRows > 0) {
             res.redirect('/karyawan')
+            res.redirect('/karyawan?notif=Berhasil input karyawan baru')
             //console.log('Berhasil input ke Database')
-    // 3a. Jika gagal, tampilan error
-        } catch (error){
+
+        }
+        // 3a. Jika gagal, tampilan error
+        } catch (error) {
         // 3b. Jika berhasil, tampilan pesan sukses
         throw error
         }
@@ -200,26 +206,38 @@ app.post('/karyawan/proses-insert-data', formValidasiInsert,async function(req,r
     errorData.pesanError[0].fields
     res.render('page-karyawan-form-tambah', errorData)
 }
-
-    
 })
 
 function insert_karyawan (req) {
     return new Promise ( (resolve, rejects) => {
-        let sqlSyntax =
-        `insert INTO karyawan
-        (nama,nik,tanggal_lahir,alamat,jabatan,agama)
-        Values
-        (?,?,?,?,?,?)
+        let sqlSyntax = 
         `
-        let sqlData = [
-            req.body.form_nama,
-            req.body.form_nik,
-            req.body.form_tanggal_lahir,
-            req.body.form_alamat,
-            req.body.form_jabatan,
-            req.body.form_agama,
-        ]
+        INSERT INTO karyawan set ?
+        `
+        let sqlData = {
+            nama          : req.body.form_nama,
+            Nik           : req.body.form_nik,
+            Tanggal_Lahir : req.body.form_tanggal_lahir,
+            Alamat        : req.body.form_alamat,
+            Jabatan       : req.body.form_jabatan,
+            Agama         : req.body.form_agama,
+        }
+
+
+        // let sqlSyntax =
+        // `insert INTO karyawan
+        // (nama,nik,tanggal_lahir,alamat,jabatan,agama)
+        // Values
+        // (?,?,?,?,?,?)
+        // `
+        // let sqlData = [
+            // req.body.form_nama,
+            // req.body.form_nik,
+            // req.body.form_tanggal_lahir,
+            // req.body.form_alamat,
+            // req.body.form_jabatan,
+            // req.body.form_agama,
+        // ]
         
         db.query(sqlSyntax, sqlData, function(errorSql, hasil) {
             if (errorSql) {
@@ -235,7 +253,6 @@ function insert_karyawan (req) {
 
 
 // Membuat tombol hapus pada page karyawan
-
 function hapuskaryawan(idkry){
     return new Promise ( (resolve, rejects) => {
         let sqlSyntax =
@@ -255,8 +272,7 @@ function hapuskaryawan(idkry){
 app.get('/karyawan/hapus/:id_karyawan', async function(req,res) {
     try {
         let hapus = await hapuskaryawan(req.params.id_karyawan)
-        if (hapus.affectedRows > 0) {
-        
+        if (hapus.affectedRows > 0) {    
         res.redirect('/karyawan')
     }
     }    catch (error) {
@@ -264,6 +280,18 @@ app.get('/karyawan/hapus/:id_karyawan', async function(req,res) {
     }
 
 })
+
+app.get('/karyawan/edit/:id_karyawan', async function(req,res) {
+    let data = {
+        satukaryawan : await getOne_karyawan(),
+        jabatan: await getAll_jabatan(),
+        agama: await getAll_agama(),
+    }
+        res.redirect('page-karyawan-form-edit')
+    })
+    
+
+
 
 
 
