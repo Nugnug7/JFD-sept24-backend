@@ -10,7 +10,7 @@ const db = mysql.createConnection ({
 
 module.exports = 
 {
-     getAll_agama:function () {
+     getAll_agama : function() {
         return new Promise( (resolve, reject) => {
             let sqlSyntax =
             `SELECT * FROM agama`
